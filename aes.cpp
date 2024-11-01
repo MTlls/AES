@@ -1,9 +1,6 @@
-#include <openssl/evp.h>
-#include <bits/stdc++.h>
-#include <aes.hpp>
-using namespace std;
+#include "libAes.hpp"
 
-int main(int argc, char **argv){    
+int main(int argc, char **argv){
     string output_file = "output";
     if(argc < 3){
         cerr << "Usage: " << argv[0] << " <input_file> <key> <output_file>" << endl;
@@ -13,4 +10,12 @@ int main(int argc, char **argv){
     }
     string input_file = argv[1];
 
+    // TODO: extrair mensagem e chave dos arquivos
+    string message = "abcdefghijklmnopqrstuvwxyz";
+    string key = "0123456789012345"; 
+
+    cryptograph(message, key);
+    decryptograph(message, key);
+
+    return 0;
 }
