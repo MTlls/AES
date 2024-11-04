@@ -33,9 +33,10 @@ else
     saida="cifrado"  # Define um nome padrão para a saída
 fi
 
-# lê a chave e a entrada
+# le a entrada
 entrada="$1"
-chave=$(cat "$2")
+# pra ler a chave, é necessário converter o binario arquivo para hexadecimal
+chave=$(cat "$2" | xxd -p)
 
 # Verifica se a chave é hexadecimal e tem 32 caracteres
 if [[ ! "$chave" =~ ^[0-9a-fA-F]+$ || ${#chave} -ne 32 ]]; then
@@ -45,6 +46,6 @@ if [[ ! "$chave" =~ ^[0-9a-fA-F]+$ || ${#chave} -ne 32 ]]; then
 fi
 
 # encripta o arquivo
-openssl enc -aes-128-ecb -K "$chave" -nosalt -nopad -in "$entrada" -out "$saida"
+openssl enc -aes-128-ecb -K "$chave" -nosalt -in "$entrada" -out "$saida"
 
 echo "Arquivo encriptado como $saida"

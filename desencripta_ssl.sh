@@ -29,9 +29,10 @@ else
     saida="desencriptado.txt"  # Remove a extensão .ssl para o nome padrão da saída
 fi
 
-# lê a chave e a entrada
-chave=$(cat "$2")
+# le a entrada
 entrada="$1"
+# pra ler a chave, é necessário converter o binario arquivo para hexadecimal
+chave=$(cat "$2" | xxd -p)
 
 # Verifica se a chave é hexadecimal e tem 32 caracteres
 if [[ ! "$chave" =~ ^[0-9a-fA-F]+$ || ${#chave} -ne 32 ]]; then
@@ -46,6 +47,6 @@ echo "chave: $chave"
 echo "entrada: $entrada"
 echo "saida: $saida"
 
-openssl enc -aes-128-ecb -d -K "$chave" -nosalt -nopad -in "$entrada" -out "$saida"
+openssl enc -aes-128-ecb -d -K "$chave" -nosalt -in "$entrada" -out "$saida"
 
 echo "Arquivo desencriptado como $saida"
