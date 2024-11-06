@@ -1,43 +1,41 @@
 #include "libAes.hpp"
 
-void printBlock(vector<uchar> message) {
-    for (int row = 0; row < ROW_SIZE; row++) {
-        for (int column = 0; column < ROW_SIZE; column++) {
-            cout << hex << setw(2) << setfill('0') << (int)message[(row * ROW_SIZE) + column] << " ";
+vector<uchar> readFile(ifstream &file) {
+    uchar content[16];
+    vector<uchar> block(16);
+    int lidos = 0;
+
+    while (file.good()) {
+        file.read((char *)&content, 16);
+        lidos = file.gcount();
+        
+        if (lidos == 0) {
+            break;
         }
-        cout << endl;
+        
+        for (int i = 0, k = 0; i < 4; i++) {
+            block[i +  0] = content[k++];
+            block[i +  4] = content[k++];
+            block[i +  8] = content[k++];
+            block[i + 12] = content[k++];
+        }
     }
+
+    printBlock(block);
+    return block;
 }
 
-void printExpandedKey(vector<uchar> key) {
-    for (size_t i = 0; i < key.size(); i++) {
-        if (i % 4 == 0) {
-            cout << endl;
-        }
-        // print in hex
-        cout << hex << setw(2) << setfill('0') << (int)key[i] << " ";
+void writeFile(ofstream &file, vector<uchar> block) {
+    for (int i = 0; i < Nc; i++) {
+        file << block[i];
+        file << block[ROW_SIZE + i];
+        file << block[2*ROW_SIZE + i];
+        file << block[3*ROW_SIZE + i];
     }
-}
-
-vector<uchar> readFile(string file) {
-    ifstream filestream(file, ios::binary);
-    vector<uchar> content;
-
-    if (filestream.is_open()) {
-        while (filestream.good()) {
-            uchar byte;
-            filestream.read((char*)&byte, sizeof(byte));
-            content.push_back(byte);
-        }
-    } else {
-        cout << "Error when reading file " << file << endl;
-    }
-
-    return content;
 }
 
 int main(int argc, char **argv){
-    string output_file = "output";
+    string output_file = "";
     if(argc < 3){
         cerr << "Usage: " << argv[0] << " <input_file> <key> <output_file>" << endl;
         exit(1);
@@ -47,23 +45,31 @@ int main(int argc, char **argv){
     string input_file = argv[1];
     string key_file = argv[2];
 
-    // TODO: extrair mensagem e chave dos arquivos
-    vector<uchar> message = readFile(input_file);
-    vector<uchar> key = readFile(key_file); 
+    // TODO: jogar isso para dentro da função de criptografia ou descriptografia
+    ifstream filestream(input_file, ios::binary);
+    ifstream keyfilestream(key_file, ios::binary);
+    ofstream output_filestream;
 
-    cout << "=-=-=-=-=-=-" << endl;
-    printBlock(message);
-    cout << "=-=-=-=-=-=-" << endl;
 
-    message = cryptograph(message, key);
-
-    cout << "=-=-=-=-=-=-" << endl;
-    printBlock(message);
-    cout << "=-=-=-=-=-=-" << endl;
-    //decryptograph(message, key);
-
+    vector<uchar> message;
+    vector<uchar> key; 
+    key = readFile(keyfilestream);
     vector<uchar> expKey(176);
     expandKey(key, expKey);
+    
+    if(!output_file.empty()){
+        output_filestream.open(output_file, ios::binary);
+    } else {
+        // output_filestream to stdout
+        output_filestream.basic_ios<char>::rdbuf(cout.rdbuf());
+    }
+
+    while(filestream.good()){
+        message = readFile(filestream);
+        message = cryptograph(message, expKey);
+        writeFile(output_filestream, message);
+    }
+    // decryptograph(message, key);
 
     return 0;
 }

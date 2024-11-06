@@ -11,5 +11,8 @@ $(PROGRAM): $(PROGRAM).o $(LIBS).o
 $(LIBS).o: $(LIBS).hpp $(LIBS).cpp
 	$(CC) $(CFLAGS) -c $(LIBS).cpp
 
+debug: CFLAGS += -g -DDEBUG
+debug: all
+
 clean:
 	rm -f *.o $(PROGRAM)
