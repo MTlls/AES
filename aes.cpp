@@ -21,7 +21,6 @@ vector<uchar> readFile(ifstream &file) {
         }
     }
 
-    printBlock(block);
     return block;
 }
 
