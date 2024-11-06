@@ -47,6 +47,6 @@ echo "chave: $chave"
 echo "entrada: $entrada"
 echo "saida: $saida"
 
-openssl enc -aes-128-ecb -d -K "$chave" -nosalt -in "$entrada" -out "$saida"
+openssl enc -aes-128-ecb -d -K "$chave" -nosalt -nopad -in "$entrada" -out "$saida"
 
 echo "Arquivo desencriptado como $saida"

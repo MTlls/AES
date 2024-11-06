@@ -46,6 +46,6 @@ if [[ ! "$chave" =~ ^[0-9a-fA-F]+$ || ${#chave} -ne 32 ]]; then
 fi
 
 # encripta o arquivo
-openssl enc -aes-128-ecb -K "$chave" -nosalt -in "$entrada" -out "$saida"
+openssl enc -aes-128-ecb -K "$chave" -nosalt -nopad -in "$entrada" -out "$saida"
 
 echo "Arquivo encriptado como $saida"
