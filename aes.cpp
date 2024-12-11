@@ -65,7 +65,7 @@ int main(int argc, char **argv){
 
     while(filestream.good()){
         message = readFile(filestream);
-        message = cryptograph(message, expKey);
+        message = decryptograph(message, expKey);
         writeFile(output_filestream, message);
     }
     // decryptograph(message, key);

@@ -21,6 +21,8 @@ void addRoundKey(vector<uchar> &message, vector<uchar> roundKey, int round);
 void printHex(uchar byte);
 void shiftSubMixColumns(vector<uchar> &message);
 void shiftSubRows(vector<uchar> &message);
+void invShiftSubColumns(vector<uchar> &message);
+void invMixColumns(vector<uchar> &message);
 
 void printBlock(vector<uchar> message);
 void printExpandedKey(vector<uchar> key);
